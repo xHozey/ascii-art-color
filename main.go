@@ -16,7 +16,8 @@ func main() {
 
 	outputFile, colorFile, args := ft.ExtractOutputFlag(defaultArgs)
 
-	banner, input := ft.OptimizeINputBanner(args)
+	banner, input, letters := ft.OptimizeINputBanner(args)
+	fmt.Print(letters)
 
 	data, err := os.ReadFile("banners/" + banner)
 	if err != nil {
@@ -40,8 +41,10 @@ func main() {
 		if err != nil {
 			fmt.Println("Error:", err)
 		}
-	} else {
+	} else if ft.ColorFlag {
 		color, Reset := ft.ColorSelection(colorFile)
 		fmt.Printf(color + result + Reset)
+	} else {
+		fmt.Printf(result)
 	}
 }

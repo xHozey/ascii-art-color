@@ -5,21 +5,38 @@ import (
 	"os"
 )
 
-func OptimizeINputBanner(args []string) (string, string) {
-	var lettersTobeColored string
-
+func OptimizeINputBanner(args []string) (string, string, string) {
 	var banner string
-	if len(args) == 2 {
-		banner = args[1]
-		banner += ".txt"
+	var letters string
+	if !ColorFlag {
+		if len(args) == 2 {
+			banner = args[1]
+			banner += ".txt"
+		} else {
+			banner = "standard.txt"
+		}
 	} else {
-		banner = "standard.txt"
+		if len(args) == 3 {
+			banner = args[2]
+			banner += ".txt"
+		} else {
+			banner = "standard.txt"
+		}
 	}
 	var input string
-	if len(args) >= 1 {
-		input = args[0]
+	if !ColorFlag {
+		if len(args) >= 1 {
+			input = args[0]
+		} else {
+			input = ""
+		}
 	} else {
-		input = ""
+		letters = args[0]
+		if len(args) >= 1 {
+			input = args[1]
+		} else {
+			input = ""
+		}
 	}
 
 	if !CheckValidInput(input) {
@@ -27,5 +44,5 @@ func OptimizeINputBanner(args []string) (string, string) {
 		os.Exit(1)
 	}
 
-	return banner, input
+	return banner, input, letters
 }

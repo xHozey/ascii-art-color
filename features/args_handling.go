@@ -7,20 +7,21 @@ import (
 	"strings"
 )
 
+var OutputFlag, ColorFlag bool
+
 func ExtractOutputFlag(args []string) (string, string, []string) {
 	var outputFile string
 	var colorFile string
 	var filteredArgs []string
-	var outputFlag, colorFlag bool
 
 	for _, val := range args {
 		if strings.HasPrefix(val, "--output=") {
-			outputFlag = true
+			OutputFlag = true
 		}
 		if strings.HasPrefix(val, "--color=") {
-			colorFlag = true
+			ColorFlag = true
 		}
-		if colorFlag && outputFlag {
+		if ColorFlag && OutputFlag {
 			fmt.Println("you can use only one flag!")
 			os.Exit(0)
 		}
@@ -75,14 +76,23 @@ func ExtractOutputFlag(args []string) (string, string, []string) {
 
 func CheckArguments(args []string) bool {
 	argCount := len(args)
-	if argCount == 2 {
-		if args[1] != "shadow" && args[1] != "standard" && args[1] != "thinkertoy" {
-			fmt.Printf("invalid banner type '%s'\nAvailable banner types are: 'standard' (default), 'shadow', and 'thinkertoy'\n", args[1])
-			os.Exit(0)
+	if !ColorFlag {
+		if argCount == 2 {
+			if args[1] != "shadow" && args[1] != "standard" && args[1] != "thinkertoy" {
+				fmt.Printf("invalid banner type '%s'\nAvailable banner types are: 'standard' (default), 'shadow', and 'thinkertoy'\n", args[1])
+				os.Exit(0)
+			}
 		}
-	}
-	if argCount > 2 {
-		return true
+		if argCount > 2 {
+			return true
+		}
+	} else {
+		if argCount == 3 {
+			if args[2] != "shadow" && args[2] != "standard" && args[2] != "thinkertoy" {
+				fmt.Printf("invalid banner type '%s'\nAvailable banner types are: 'standard' (default), 'shadow', and 'thinkertoy'\n", args[1])
+				os.Exit(0)
+			}
+		}
 	}
 	return false
 }
