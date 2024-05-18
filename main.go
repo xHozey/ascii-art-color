@@ -16,12 +16,11 @@ func main() {
 
 	outputFile, colorFile, args := ft.ExtractOutputFlag(defaultArgs)
 
-	banner, input, letters := ft.OptimizeINputBanner(args)
-	fmt.Print(letters)
+	banner, input, letters := ft.OptimizeInputBanner(args)
 
 	data, err := os.ReadFile("banners/" + banner)
 	if err != nil {
-		fmt.Printf("Error: %s", err)
+		fmt.Printf("Error: %s\n", err)
 		return
 	}
 
@@ -35,15 +34,23 @@ func main() {
 	characterMatrix := ft.ConvertToCharacterMatrix(content)
 
 	result := ft.DrawASCIIArt(characterMatrix, splittedInput)
+	checkLetter := ft.CheckLettersToColor(input, letters)
 
 	if outputFile != "" {
 		err := ft.SaveFile(outputFile, result)
 		if err != nil {
 			fmt.Println("Error:", err)
 		}
-	} else if ft.ColorFlag {
+	} else if ft.ColorFlag && letters == "" {
 		color, Reset := ft.ColorSelection(colorFile)
 		fmt.Printf(color + result + Reset)
+	} else if ft.ColorFlag && letters != "" {
+		if checkLetter {
+			color, Reset := ft.ColorSelection(colorFile)
+			fmt.Printf(color + result + Reset)
+		} else {
+			fmt.Println("invalid letters to be colored")
+		}
 	} else {
 		fmt.Printf(result)
 	}

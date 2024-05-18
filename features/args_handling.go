@@ -41,7 +41,7 @@ func ExtractOutputFlag(args []string) (string, string, []string) {
 		if strings.HasPrefix(arg, "--output=") && i == 0 {
 			outputFile = strings.TrimPrefix(arg, "--output=")
 			if len(outputFile) == 0 {
-				Usage()
+				OutputUsage()
 				os.Exit(0)
 			}
 		} else if strings.HasPrefix(arg, "--color=") && i == 0 {
@@ -49,11 +49,11 @@ func ExtractOutputFlag(args []string) (string, string, []string) {
 			outputFile = ""
 
 			if len(colorFile) == 0 {
-				Usage()
+				OutputUsage()
 				os.Exit(0)
 			}
 		} else if strings.HasPrefix(arg, "--") {
-			Usage()
+			OutputUsage()
 			os.Exit(0)
 		} else {
 			filteredArgs = append(filteredArgs, arg)
@@ -61,7 +61,7 @@ func ExtractOutputFlag(args []string) (string, string, []string) {
 	}
 
 	if err := CheckArguments(filteredArgs); err {
-		Usage()
+		OutputUsage()
 		os.Exit(0)
 	}
 	if outputFile != "" {
@@ -121,6 +121,10 @@ func ValidateFileExtension(filename string) error {
 	return fmt.Errorf("invalid file extension '%s' for --output option. Please use one of the following extensions: .txt", extension)
 }
 
-func Usage() {
-	fmt.Fprintf(os.Stderr, "\n   Usage: go run . [OPTION] [STRING] [BANNER]\n\n   Example: go run . --output=<fileName.txt> something standard\n\n")
+func OutputUsage() {
+	fmt.Fprintf(os.Stderr, "\n   Output: go run . [OPTION] [STRING] [BANNER]\n\n   Example: go run . --output=<fileName.txt> something standard\n\n")
+}
+
+func ColorUsage() {
+	fmt.Fprintf(os.Stderr, "\n Usage: go run . [OPTION] [STRING]\n\n EX: go run . --color=<color> <letters to be colored> something\n\n")
 }
