@@ -32,9 +32,16 @@ func ExtractOutputFlag(args []string) (string, string, string, string, string) {
 			input = args[2]
 			banner = args[3] + ".txt"
 			ColorFlag = true
+		} else if strings.HasPrefix(args[0], "--") {
+			fmt.Println("Invalid flag")
+			os.Exit(0)
 		}
 		if strings.HasPrefix(args[0], "--output=") {
 			OutputUsage()
+		}
+		if args[3] != "standard" && args[3] != "thinkertoy" && args[3] != "shadow" {
+			fmt.Println("Invalid banner name")
+			os.Exit(0)
 		}
 	case 3:
 		if strings.HasPrefix(args[0], "--color=") {
@@ -64,6 +71,9 @@ func ExtractOutputFlag(args []string) (string, string, string, string, string) {
 				banner = args[2] + ".txt"
 			}
 			OutputFlag = true
+		} else if strings.HasPrefix(args[0], "--") {
+			fmt.Println("Invalid flag")
+			os.Exit(0)
 		} else {
 			ColorUsage()
 		}
@@ -87,6 +97,9 @@ func ExtractOutputFlag(args []string) (string, string, string, string, string) {
 		} else if args[1] == "standard" || args[1] == "thinkertoy" || args[1] == "shadow" {
 			input = args[0]
 			banner = args[1] + ".txt"
+		} else if strings.HasPrefix(args[0], "--") {
+			fmt.Println("Invalid flag")
+			os.Exit(0)
 		} else {
 			fmt.Println("Invalid bannerfile")
 			os.Exit(0)

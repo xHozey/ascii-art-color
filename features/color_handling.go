@@ -14,7 +14,7 @@ var (
 	Blue    = "\033[34m"
 	Magenta = "\033[35m"
 	Cyan    = "\033[36m"
-	Gray    = "\033[37m"
+	Gray    = "\033[90m"
 	White   = "\033[97m"
 )
 
@@ -37,7 +37,7 @@ func ColorSelection(s string) (string, string) {
 		case "cyan":
 			selectedColor = "\033[36m"
 		case "gray":
-			selectedColor = "\033[37m"
+			selectedColor = "\033[90m"
 		case "white":
 			selectedColor = "\033[97m"
 		default:
