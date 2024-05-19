@@ -31,10 +31,11 @@ func main() {
 	}
 	content := strings.Split(stringData, "\n\n")
 	characterMatrix := ft.ConvertToCharacterMatrix(content)
+	hasnewline := ft.CheckEmptyLines(splittedInput)
 	result := ""
 
 	if ft.OutputFlag && outputFile != "" {
-		result := ft.DrawASCIIArt(characterMatrix, strings.Join(splittedInput, "\n"), letters, "")
+		result := ft.DrawASCIIArt(characterMatrix, splittedInput, hasnewline)
 		err := ft.SaveFile(outputFile, result)
 		if err != nil {
 			fmt.Println("Error:", err)
@@ -46,7 +47,7 @@ func main() {
 			if Input == "" {
 				result += "\n"
 			} else {
-				result += ft.DrawASCIIArt(characterMatrix, Input, letters, colorFile)
+				result += ft.DrawASCIIArtPrinted(characterMatrix, Input, letters, colorFile)
 			}
 		}
 		fmt.Println(result)

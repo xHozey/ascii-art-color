@@ -24,7 +24,7 @@ func CheckEmptyLines(splittedInput []string) bool {
 }
 
 // Render the ASCII art based on the character matrix and the input lines
-func DrawASCIIArt(characterMatrix map[rune][]string, Input string, letter string, ColorFile string) string {
+func DrawASCIIArtPrinted(characterMatrix map[rune][]string, Input string, letter string, ColorFile string) string {
 	result := ""
 	Color, Default := ColorSelection(ColorFile)
 	checkLetter := CheckLettersToColor(Input, letter)
@@ -54,5 +54,26 @@ func DrawASCIIArt(characterMatrix map[rune][]string, Input string, letter string
 		}
 	}
 
+	return result
+}
+
+func DrawASCIIArt(characterMatrix map[rune][]string, splittedInput []string, hasNonEmptyLines bool) string {
+	result := ""
+	for i, val := range splittedInput {
+		if val == "" {
+			if hasNonEmptyLines {
+				result += "\n"
+			} else if i != 0 && !hasNonEmptyLines {
+				result += "\n"
+			}
+		} else if val != "" {
+			for j := 0; j < 8; j++ {
+				for _, k := range val {
+					result += characterMatrix[k][j]
+				}
+				result += "\n"
+			}
+		}
+	}
 	return result
 }
