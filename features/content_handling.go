@@ -27,43 +27,32 @@ func CheckEmptyLines(splittedInput []string) bool {
 func DrawASCIIArt(characterMatrix map[rune][]string, Input string, letter string, ColorFile string) string {
 	result := ""
 	Color, Default := ColorSelection(ColorFile)
+	checkLetter := CheckLettersToColor(Input, letter)
+
 	if letter == "" {
 		letter = Input
 	}
 	Run := false
 	for n := 0; n < 8; n++ {
-		LetterCount := len(letter)
 		for j := 0; j < len(Input); j++ {
-			if Input[j:j+len(letter)] == letter && ColorFlag {
-				Run = true
-				LetterCount = len(letter)
+			for k := 0; k < len(letter); k++ {
+				if rune(letter[k]) == rune(Input[j]) {
+					Run = true
+				}
 			}
-			if Run && ColorFlag {
+			if Run && ColorFlag && checkLetter {
 				result += Color + characterMatrix[rune(Input[j])][n] + Default
-				LetterCount--
+				Run = false
+			} else if Run && ColorFlag {
+				result += Color + characterMatrix[rune(Input[j])][n] + Default
 			} else {
 				result += characterMatrix[rune(Input[j])][n]
 			}
 		}
-		if n != 7 {
+		if n < 7 {
 			result += "\n"
 		}
 	}
-	/*for i, val := range splittedInput {
-		if val == "" {
-			if hasNonEmptyLines {
-				result += "\n"
-			} else if i != 0 && !hasNonEmptyLines {
-				result += "\n"
-			}
-		} else if val != "" {
-			for j := 0; j < 8; j++ {
-				for _, k := range val {
-					result += characterMatrix[k][j]
-				}
-				result += "\n"
-			}
-		}
-	}*/
+
 	return result
 }

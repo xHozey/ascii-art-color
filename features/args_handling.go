@@ -16,6 +16,11 @@ func ExtractOutputFlag(args []string) (string, string, string, string, string) {
 		banner         = "standard.txt"
 		input, letters string
 	)
+	if len(args) > 4 {
+		fmt.Println("Too many arguments")
+		os.Exit(0)
+	}
+
 	switch len(args) {
 	case 4:
 		if strings.HasPrefix(args[0], "--color=") {
@@ -27,6 +32,9 @@ func ExtractOutputFlag(args []string) (string, string, string, string, string) {
 			input = args[2]
 			banner = args[3] + ".txt"
 			ColorFlag = true
+		}
+		if strings.HasPrefix(args[0], "--output=") {
+			OutputUsage()
 		}
 	case 3:
 		if strings.HasPrefix(args[0], "--color=") {
@@ -43,6 +51,7 @@ func ExtractOutputFlag(args []string) (string, string, string, string, string) {
 			}
 			ColorFlag = true
 		} else if strings.HasPrefix(args[0], "--output=") {
+
 			outputFile = strings.TrimPrefix(args[0], "--output=")
 			if len(outputFile) == 0 {
 				OutputUsage()
@@ -60,6 +69,7 @@ func ExtractOutputFlag(args []string) (string, string, string, string, string) {
 		}
 	case 2:
 		if strings.HasPrefix(args[0], "--color=") {
+
 			colorFile = strings.TrimPrefix(args[0], "--color=")
 			if len(colorFile) == 0 {
 				ColorUsage()
@@ -67,6 +77,7 @@ func ExtractOutputFlag(args []string) (string, string, string, string, string) {
 			input = args[1]
 			ColorFlag = true
 		} else if strings.HasPrefix(args[0], "--output=") {
+
 			outputFile = strings.TrimPrefix(args[0], "--output=")
 			if len(outputFile) == 0 {
 				OutputUsage()
@@ -77,7 +88,8 @@ func ExtractOutputFlag(args []string) (string, string, string, string, string) {
 			input = args[0]
 			banner = args[1] + ".txt"
 		} else {
-			ColorUsage()
+			fmt.Println("Invalid bannerfile")
+			os.Exit(0)
 		}
 	case 1:
 		input = args[0]
