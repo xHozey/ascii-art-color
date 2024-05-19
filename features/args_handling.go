@@ -9,92 +9,84 @@ import (
 
 var OutputFlag, ColorFlag bool
 
-func ExtractOutputFlag(args []string) (string, string, []string) {
-	var outputFile string
-	var colorFile string
-	var filteredArgs []string
-
-	for _, val := range args {
-		if strings.HasPrefix(val, "--output=") {
-			OutputFlag = true
-		}
-		if strings.HasPrefix(val, "--color=") {
+func ExtractOutputFlag(args []string) (string, string, string, string, string) {
+	var (
+		outputFile     string
+		colorFile      string
+		banner         = "standard.txt"
+		input, letters string
+	)
+	switch len(args) {
+	case 4:
+		if strings.HasPrefix(args[0], "--color=") {
+			colorFile = strings.TrimPrefix(args[0], "--color=")
+			if len(colorFile) == 0 {
+				ColorUsage()
+			}
+			letters = args[1]
+			input = args[2]
+			banner = args[3] + ".txt"
 			ColorFlag = true
 		}
-		if ColorFlag && OutputFlag {
-			fmt.Println("you can use only one flag!")
-			os.Exit(0)
-		}
-	}
-
-	// check if arguments are given as one string
-	if len(args) == 1 {
-		tempArgs := strings.Fields(args[0])
-		for _, v := range tempArgs {
-			if strings.HasPrefix(v, "--") {
-				args = tempArgs
+	case 3:
+		if strings.HasPrefix(args[0], "--color=") {
+			colorFile = strings.TrimPrefix(args[0], "--color=")
+			if len(colorFile) == 0 {
+				ColorUsage()
 			}
-		}
-	}
-
-	for i, arg := range args {
-		if strings.HasPrefix(arg, "--output=") && i == 0 {
-			outputFile = strings.TrimPrefix(arg, "--output=")
+			if args[2] == "standard" || args[2] == "thinkertoy" || args[2] == "shadow" {
+				input = args[1]
+				banner = args[2] + ".txt"
+			} else {
+				letters = args[1]
+				input = args[2]
+			}
+			ColorFlag = true
+		} else if strings.HasPrefix(args[0], "--output=") {
+			outputFile = strings.TrimPrefix(args[0], "--output=")
 			if len(outputFile) == 0 {
 				OutputUsage()
-				os.Exit(0)
 			}
-		} else if strings.HasPrefix(arg, "--color=") && i == 0 {
-			colorFile = strings.TrimPrefix(arg, "--color=")
-			outputFile = ""
-
-			if len(colorFile) == 0 {
-				OutputUsage()
+			input = args[1]
+			if args[2] != "standard" && args[2] != "thinkertoy" && args[2] != "shadow" {
+				fmt.Println("invalid Banner Name")
 				os.Exit(0)
+			} else {
+				banner = args[2] + ".txt"
 			}
-		} else if strings.HasPrefix(arg, "--") {
-			OutputUsage()
-			os.Exit(0)
+			OutputFlag = true
 		} else {
-			filteredArgs = append(filteredArgs, arg)
+			ColorUsage()
 		}
-	}
-
-	if err := CheckArguments(filteredArgs); err {
-		OutputUsage()
-		os.Exit(0)
-	}
-	if outputFile != "" {
-		if err := ValidateFileExtension(outputFile); err != nil {
-			fmt.Fprintln(os.Stderr, err)
-			os.Exit(0)
-		}
-	}
-
-	return outputFile, colorFile, filteredArgs
-}
-
-func CheckArguments(args []string) bool {
-	argCount := len(args)
-	if !ColorFlag {
-		if argCount == 2 {
-			if args[1] != "shadow" && args[1] != "standard" && args[1] != "thinkertoy" {
-				fmt.Printf("invalid banner type '%s'\nAvailable banner types are: 'standard' (default), 'shadow', and 'thinkertoy'\n", args[1])
-				os.Exit(0)
+	case 2:
+		if strings.HasPrefix(args[0], "--color=") {
+			colorFile = strings.TrimPrefix(args[0], "--color=")
+			if len(colorFile) == 0 {
+				ColorUsage()
 			}
-		}
-		if argCount > 2 {
-			return true
-		}
-	} else {
-		if argCount == 3 {
-			if args[2] != "shadow" && args[2] != "standard" && args[2] != "thinkertoy" {
-				fmt.Printf("invalid banner type '%s'\nAvailable banner types are: 'standard' (default), 'shadow', and 'thinkertoy'\n", args[1])
-				os.Exit(0)
+			input = args[1]
+			ColorFlag = true
+		} else if strings.HasPrefix(args[0], "--output=") {
+			outputFile = strings.TrimPrefix(args[0], "--output=")
+			if len(outputFile) == 0 {
+				OutputUsage()
 			}
+			input = args[1]
+			OutputFlag = true
+		} else if args[1] == "standard" || args[1] == "thinkertoy" || args[1] == "shadow" {
+			input = args[0]
+			banner = args[1] + ".txt"
+		} else {
+			ColorUsage()
 		}
+	case 1:
+		input = args[0]
+	case 0:
+		ColorUsage()
 	}
-	return false
+	// check if arguments are given as one string
+
+	return banner, colorFile, input, letters, outputFile
 }
 
 // validates if the input contains only printable ASCII characters
@@ -123,8 +115,10 @@ func ValidateFileExtension(filename string) error {
 
 func OutputUsage() {
 	fmt.Fprintf(os.Stderr, "\n   Output: go run . [OPTION] [STRING] [BANNER]\n\n   Example: go run . --output=<fileName.txt> something standard\n\n")
+	os.Exit(0)
 }
 
 func ColorUsage() {
 	fmt.Fprintf(os.Stderr, "\n Usage: go run . [OPTION] [STRING]\n\n EX: go run . --color=<color> <letters to be colored> something\n\n")
+	os.Exit(0)
 }
