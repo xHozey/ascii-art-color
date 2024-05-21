@@ -71,13 +71,21 @@ func extractOutputFlag(arg []string) string {
 }
 
 // CheckLettersToColor checks if the specified characters should be colored in the output.
+// func CheckLettersToColor(str string, char string) bool {
+// 	var TheresLetterToColor bool
+// 	for _, val := range char {
+// 		TheresLetterToColor = strings.ContainsRune(str, val)
+// 		if !TheresLetterToColor && ColorFlag && char != "" {
+// 			invalidLetter()
+// 		}
+// 	}
+// 	return TheresLetterToColor
+// }
+
 func CheckLettersToColor(str string, char string) bool {
-	var TheresLetterToColor bool
-	for _, val := range char {
-		TheresLetterToColor = strings.ContainsRune(str, val)
-		if !TheresLetterToColor && ColorFlag && char != "" {
-			invalidLetter()
-		}
+	TheresLetterToColor := strings.Contains(str, char)
+	if !TheresLetterToColor && ColorFlag && char != "" {
+		invalidLetter()
 	}
 	return TheresLetterToColor
 }
