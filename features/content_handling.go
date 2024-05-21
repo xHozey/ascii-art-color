@@ -68,6 +68,7 @@ func DrawASCIIArt(characterMatrix map[rune][]string, splittedInput []string, has
 								result += characterMatrix[k][j]
 							}
 						}
+						result += characterMatrix[32][j]
 					}
 					result += "\n"
 				}
