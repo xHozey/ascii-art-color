@@ -1,149 +1,97 @@
 package asciiart
 
-import (
-	"fmt"
-	"os"
-	"path/filepath"
-	"strings"
-)
+var OutputFlag, ColorFlag, Banner bool
+var BannerFile string = "standard.txt"
 
-var OutputFlag, ColorFlag bool
-
-func ExtractOutputFlag(args []string) (string, string, string, string, string) {
+// ExtractFlag extracts flags and arguments from the command line.
+func ExtractFlag(args []string) (string, string, string, string) {
 	var (
-		outputFile     string
-		colorFile      string
-		banner         = "standard.txt"
-		input, letters string
+		outputFile string
+		colorFile  string
+		input      string
+		letters    string
 	)
-	if len(args) > 4 {
-		fmt.Println("Too many arguments")
-		os.Exit(0)
+
+	// Check for specified flags and handle accordingly
+	CheckFlags(args)
+
+	// Handling cases when both color and output flags are specified
+	if ColorFlag && OutputFlag {
+		invalidFlags()
 	}
 
+	// Handling cases when there are more than 4 arguments provided
+	if len(args) > 4 {
+		ColorUsage()
+	}
+
+	// Switching based on the number of arguments provided
 	switch len(args) {
 	case 4:
-		if strings.HasPrefix(args[0], "--color=") {
-			colorFile = strings.TrimPrefix(args[0], "--color=")
-			if len(colorFile) == 0 {
-				ColorUsage()
-			}
+		// Check if banner flag is specified
+		CheckBanner(args[3])
+		if ColorFlag {
+			colorFile = extractColorFlag(args)
 			letters = args[1]
 			input = args[2]
-			banner = args[3] + ".txt"
-			ColorFlag = true
-		} else if strings.HasPrefix(args[0], "--") {
-			fmt.Println("Invalid flag")
-			os.Exit(0)
+			BannerFile = args[3] + ".txt"
+		} else {
+			ColorUsage()
 		}
-		if strings.HasPrefix(args[0], "--output=") {
+		if OutputFlag {
 			OutputUsage()
 		}
-		if args[3] != "standard" && args[3] != "thinkertoy" && args[3] != "shadow" {
-			fmt.Println("Invalid banner name")
-			os.Exit(0)
+		if Banner {
+			applyBanner(args[3])
+		} else if !Banner {
+			invalidBanner()
 		}
 	case 3:
-		if strings.HasPrefix(args[0], "--color=") {
-			colorFile = strings.TrimPrefix(args[0], "--color=")
-			if len(colorFile) == 0 {
-				ColorUsage()
-			}
-			if args[2] == "standard" || args[2] == "thinkertoy" || args[2] == "shadow" {
-				input = args[1]
-				banner = args[2] + ".txt"
-			} else {
-				letters = args[1]
-				input = args[2]
-			}
-			ColorFlag = true
-		} else if strings.HasPrefix(args[0], "--output=") {
-
-			outputFile = strings.TrimPrefix(args[0], "--output=")
-			if len(outputFile) == 0 {
-				OutputUsage()
-			}
+		// Check if banner flag is specified
+		CheckBanner(args[2])
+		if ColorFlag {
+			colorFile = extractColorFlag(args)
+			letters = args[1]
+			input = args[2]
+		} else if OutputFlag {
+			outputFile = extractOutputFlag(args)
 			input = args[1]
-			if args[2] != "standard" && args[2] != "thinkertoy" && args[2] != "shadow" {
-				fmt.Println("invalid Banner Name")
-				os.Exit(0)
-			} else {
-				banner = args[2] + ".txt"
+			if Banner {
+				applyBanner(args[2])
+			} else if !Banner {
+				invalidBanner()
 			}
-			OutputFlag = true
-		} else if strings.HasPrefix(args[0], "--") {
-			fmt.Println("Invalid flag")
-			os.Exit(0)
 		} else {
 			ColorUsage()
 		}
 	case 2:
-		if strings.HasPrefix(args[0], "--color=") {
-
-			colorFile = strings.TrimPrefix(args[0], "--color=")
-			if len(colorFile) == 0 {
-				ColorUsage()
-			}
+		// Check if banner flag is specified
+		CheckBanner(args[1])
+		if ColorFlag {
+			colorFile = extractColorFlag(args)
 			input = args[1]
-			ColorFlag = true
-		} else if strings.HasPrefix(args[0], "--output=") {
-
-			outputFile = strings.TrimPrefix(args[0], "--output=")
-			if len(outputFile) == 0 {
-				OutputUsage()
-			}
+		} else if OutputFlag {
+			outputFile = extractOutputFlag(args)
 			input = args[1]
-			OutputFlag = true
-		} else if args[1] == "standard" || args[1] == "thinkertoy" || args[1] == "shadow" {
+		}
+		if Banner {
+			applyBanner(args[1])
 			input = args[0]
-			banner = args[1] + ".txt"
-		} else if strings.HasPrefix(args[0], "--") {
-			fmt.Println("Invalid flag")
-			os.Exit(0)
-		} else {
-			fmt.Println("Invalid bannerfile")
-			os.Exit(0)
+		} else if !Banner && !OutputFlag && !ColorFlag {
+			invalidBanner()
 		}
 	case 1:
+		// Handling case when only one argument is provided
+		if ColorFlag {
+			ColorUsage()
+		} else if OutputFlag {
+			OutputUsage()
+		}
 		input = args[0]
 	case 0:
+		// Handling case when no arguments are provided
 		ColorUsage()
 	}
-	// check if arguments are given as one string
 
-	return banner, colorFile, input, letters, outputFile
-}
-
-// validates if the input contains only printable ASCII characters
-func CheckValidInput(input string) bool {
-	for _, char := range input {
-		if int(char) < 32 || int(char) > 126 {
-			return false
-		}
-	}
-	return true
-}
-
-func ValidateFileExtension(filename string) error {
-	acceptableExtensions := []string{".txt", ".json"}
-	extension := strings.ToLower(filepath.Ext(filename))
-	if extension == "" {
-		return fmt.Errorf("please use one of the following extensions for the output file: .txt")
-	}
-	for _, ext := range acceptableExtensions {
-		if extension == ext {
-			return nil
-		}
-	}
-	return fmt.Errorf("invalid file extension '%s' for --output option. Please use one of the following extensions: .txt", extension)
-}
-
-func OutputUsage() {
-	fmt.Fprintf(os.Stderr, "\n   Output: go run . [OPTION] [STRING] [BANNER]\n\n   Example: go run . --output=<fileName.txt> something standard\n\n")
-	os.Exit(0)
-}
-
-func ColorUsage() {
-	fmt.Fprintf(os.Stderr, "\n Usage: go run . [OPTION] [STRING]\n\n EX: go run . --color=<color> <letters to be colored> something\n\n")
-	os.Exit(0)
+	return colorFile, input, letters, outputFile
 }

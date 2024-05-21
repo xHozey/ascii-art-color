@@ -1,75 +1,51 @@
 package asciiart
 
-import (
-	"strings"
-)
-
-// Convert content array to a character matrix mapping ASCII characters to their line representations
-func ConvertToCharacterMatrix(content []string) map[rune][]string {
-	characterMatrix := map[rune][]string{}
-	for i, val := range content {
-		characterMatrix[rune(32+i)] = strings.Split(val, "\n")
-	}
-	return characterMatrix
-}
-
-// Check if there are any non-empty lines in the input lines array
-func CheckEmptyLines(splittedInput []string) bool {
-	for _, line := range splittedInput {
-		if line != "" {
-			return true
-		}
-	}
-	return false
-}
-
-// Render the ASCII art based on the character matrix and the input lines
-func DrawASCIIArtPrinted(characterMatrix map[rune][]string, Input string, letter string, ColorFile string) string {
+// DrawASCIIArt generates ASCII art from a character matrix and input text.
+// It applies colors if ColorFlag is enabled and applies letter-specific coloring if specified.
+func DrawASCIIArt(characterMatrix map[rune][]string, splittedInput []string, hasNonEmptyLines bool, letter string, ColorFile string, input string) string {
 	result := ""
-	Color, Default := ColorSelection(ColorFile)
-	checkLetter := CheckLettersToColor(Input, letter)
-
-	if letter == "" {
-		letter = Input
-	}
 	Run := false
-	for n := 0; n < 8; n++ {
-		for j := 0; j < len(Input); j++ {
-			for k := 0; k < len(letter); k++ {
-				if rune(letter[k]) == rune(Input[j]) {
-					Run = true
-				}
-			}
-			if Run && ColorFlag && checkLetter {
-				result += Color + characterMatrix[rune(Input[j])][n] + Default
-				Run = false
-			} else if Run && ColorFlag {
-				result += Color + characterMatrix[rune(Input[j])][n] + Default
-			} else {
-				result += characterMatrix[rune(Input[j])][n]
-			}
-		}
-		if n < 7 {
-			result += "\n"
-		}
+	Color, Default := ColorSelection(ColorFile)
+
+	// Check if specific letters are designated for coloring
+	CheckLettersToColor(input, letter)
+	if letter == "" {
+		letter = input
 	}
 
-	return result
-}
-
-func DrawASCIIArt(characterMatrix map[rune][]string, splittedInput []string, hasNonEmptyLines bool) string {
-	result := ""
 	for i, val := range splittedInput {
 		if val == "" {
+			// If the line is empty, add a newline character to the result
 			if hasNonEmptyLines {
 				result += "\n"
 			} else if i != 0 && !hasNonEmptyLines {
 				result += "\n"
 			}
-		} else if val != "" {
+		} else if val != "" && !ColorFlag {
+			// If ColorFlag is not enabled, draw ASCII art without color
 			for j := 0; j < 8; j++ {
 				for _, k := range val {
 					result += characterMatrix[k][j]
+				}
+				result += "\n"
+			}
+		} else if val != "" && ColorFlag {
+			// If ColorFlag is enabled, apply coloring
+			for j := 0; j < 8; j++ {
+				for _, k := range val {
+					// Check if the current character should be colored
+					for l := 0; l < len(letter); l++ {
+						if rune(letter[l]) == rune(k) {
+							Run = true
+						}
+					}
+					if Run && ColorFlag {
+						// Apply color to the character
+						result += Color + characterMatrix[k][j] + Default
+						Run = false
+					} else {
+						result += characterMatrix[k][j]
+					}
 				}
 				result += "\n"
 			}

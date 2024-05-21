@@ -1,11 +1,10 @@
 package asciiart
 
 import (
-	"fmt"
-	"os"
 	"strings"
 )
 
+// ANSI color code constants
 var (
 	Reset   = "\033[0m"
 	Red     = "\033[31m"
@@ -18,46 +17,35 @@ var (
 	White   = "\033[97m"
 )
 
+// ColorSelection selects the appropriate ANSI color code based on the input string.
+// Returns the selected color and the ANSI reset code.
 func ColorSelection(s string) (string, string) {
+	// Convert the input string to lowercase for case-insensitive comparison
 	s = strings.ToLower(s)
 	var selectedColor string
-	Reset := "\033[0m"
+	// Check if ColorFlag is enabled
 	if ColorFlag {
+		// Select color based on input string
 		switch s {
 		case "red":
-			selectedColor = "\033[31m"
+			selectedColor = Red
 		case "green":
-			selectedColor = "\033[32m"
+			selectedColor = Green
 		case "yellow":
-			selectedColor = "\033[33m"
+			selectedColor = Yellow
 		case "blue":
-			selectedColor = "\033[34m"
+			selectedColor = Blue
 		case "purple":
-			selectedColor = "\033[35m"
+			selectedColor = Magenta
 		case "cyan":
-			selectedColor = "\033[36m"
+			selectedColor = Cyan
 		case "gray":
-			selectedColor = "\033[90m"
+			selectedColor = Gray
 		case "white":
-			selectedColor = "\033[97m"
+			selectedColor = White
 		default:
-			fmt.Println("please input one of this colors")
-			fmt.Println(Red + "red" + Reset + " " + Green + "green" + Reset + " " + Yellow + "yellow" + Reset + " " + Blue + "blue" + Reset + " " + Magenta + "purple" + Reset + " " + Cyan + "cyan" + Reset + " " + Gray + "gray" + Reset + " " + White + "white" + Reset)
-			os.Exit(0)
+			invalidColor()
 		}
 	}
 	return selectedColor, Reset
-}
-
-func CheckLettersToColor(str string, char string) bool {
-	runex := []rune(char)
-	var TheresLetterToColor bool
-	for _, val := range runex {
-		TheresLetterToColor = strings.ContainsRune(str, val)
-	}
-	if !TheresLetterToColor && ColorFlag && char != "" {
-		fmt.Println("invalid letters to be colored")
-		os.Exit(0)
-	}
-	return TheresLetterToColor
 }
