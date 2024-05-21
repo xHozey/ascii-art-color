@@ -69,7 +69,6 @@ func main() {
 				result = ft.DrawASCIIArt(characterMatrix, splittedInput, hasnewline, letters, colorFile, input)
 			}
 		}
-		// Print result to standard output
 		fmt.Println(result)
 	}
 }

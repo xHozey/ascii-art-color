@@ -1,5 +1,7 @@
 package asciiart
 
+var StringValid string
+
 // DrawASCIIArt generates ASCII art from a character matrix and input text.
 // It applies colors if ColorFlag is enabled and applies letter-specific coloring if specified.
 func DrawASCIIArt(characterMatrix map[rune][]string, splittedInput []string, hasNonEmptyLines bool, letter string, ColorFile string, input string) string {
@@ -8,7 +10,14 @@ func DrawASCIIArt(characterMatrix map[rune][]string, splittedInput []string, has
 	Color, Default := ColorSelection(ColorFile)
 
 	// Check if specific letters are designated for coloring
-	CheckLettersToColor(input, letter)
+	letterCheck := false
+	stringCheck := false
+	if len(letter) == 1 {
+		letterCheck = CheckLettersToColor(input, letter)
+	} //  else {
+	// 	stringCheck = CheckStringToColor(input, letter)
+	// }
+
 	if letter == "" {
 		letter = input
 	}
@@ -35,11 +44,17 @@ func DrawASCIIArt(characterMatrix map[rune][]string, splittedInput []string, has
 				for _, k := range val {
 					// Check if the current character should be colored
 					for l := 0; l < len(letter); l++ {
-						if rune(letter[l]) == rune(k) {
+						if rune(letter[l]) == rune(k) && letterCheck {
+							Run = true
+						} else if val == StringValid {
 							Run = true
 						}
 					}
-					if Run && ColorFlag {
+					if Run && ColorFlag && letterCheck && !stringCheck {
+						// Apply color to the character
+						result += Color + characterMatrix[k][j] + Default
+						Run = false
+					} else if Run && ColorFlag && !letterCheck {
 						// Apply color to the character
 						result += Color + characterMatrix[k][j] + Default
 						Run = false

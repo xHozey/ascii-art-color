@@ -81,3 +81,15 @@ func CheckLettersToColor(str string, char string) bool {
 	}
 	return TheresLetterToColor
 }
+
+func CheckStringToColor(str string, char string) bool {
+	splittedInput := strings.Split(str, " ")
+	var TheresStringToColor bool
+	for _, val := range splittedInput {
+		TheresStringToColor = strings.EqualFold(val, char)
+		if TheresStringToColor {
+			StringValid += val
+		}
+	}
+	return TheresStringToColor
+}
