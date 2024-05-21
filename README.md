@@ -4,14 +4,26 @@ This is a Golang project allow you to convert text into ASCII art with color sup
 
 Usage
 
-Here's a simple example demonstrating how to use ASCII Art Color:
+Here's a simple example to use ASCII Art Color:
 
-Usage: go run . [OPTION] [STRING]
+    Output and Fs included.Usage: go run . [OPTION] [STRING]
+    
+    EX: go run . --color=<color> <letters to be colored> "something"
 
-EX: go run . --color=<color> <letters to be colored> "something"
+Here's a simple example to use ASCII Art Output:
+
+    Usage: go run . [OPTION] [STRING] [BANNER]
+
+    EX: go run . --output=<fileName.txt> something standard
+
+Here's a simple example to use ASCII Art FS:
+
+    Usage: go run . [STRING] [BANNER]
+
+    EX: go run . something standard
 
 Features
 
-    Convert text into ASCII art with color support.
-    Differnt ASCII style.
-    Output and Fs included.
+  Convert text into ASCII art with color support.
+  Differnt ASCII style.
+  Output and FS included.
