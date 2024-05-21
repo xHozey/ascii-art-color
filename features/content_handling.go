@@ -14,9 +14,9 @@ func DrawASCIIArt(characterMatrix map[rune][]string, splittedInput []string, has
 	stringCheck := false
 	if len(letter) == 1 {
 		letterCheck = CheckLettersToColor(input, letter)
-	} //  else {
-	// 	stringCheck = CheckStringToColor(input, letter)
-	// }
+	} else {
+		stringCheck = CheckStringToColor(input, letter)
+	}
 
 	if letter == "" {
 		letter = input
@@ -46,7 +46,7 @@ func DrawASCIIArt(characterMatrix map[rune][]string, splittedInput []string, has
 					for l := 0; l < len(letter); l++ {
 						if rune(letter[l]) == rune(k) && letterCheck {
 							Run = true
-						} else if val == StringValid {
+						} else if letter == StringValid {
 							Run = true
 						}
 					}
