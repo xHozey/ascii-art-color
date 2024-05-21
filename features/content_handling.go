@@ -40,10 +40,10 @@ func DrawASCIIArt(characterMatrix map[rune][]string, splittedInput []string, has
 					result += "\n"
 				}
 			} else {
-				splitedLine := strings.Split(line, " ")
-				for _, word := range splitedLine {
-					// If ColorFlag is enabled, apply coloring
-					for j := 0; j < 8; j++ {
+				for j := 0; j < 8; j++ {
+					splitedLine := strings.Split(line, " ")
+					for _, word := range splitedLine {
+						// If ColorFlag is enabled, apply coloring
 						for _, k := range word {
 							// Check if the current character should be colored
 							if letterCheck {
@@ -68,8 +68,8 @@ func DrawASCIIArt(characterMatrix map[rune][]string, splittedInput []string, has
 								result += characterMatrix[k][j]
 							}
 						}
-						result += "\n"
 					}
+					result += "\n"
 				}
 			}
 		}
