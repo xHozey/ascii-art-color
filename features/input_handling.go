@@ -83,21 +83,18 @@ func extractOutputFlag(arg []string) string {
 // }
 
 func CheckLettersToColor(str string, char string) bool {
-	TheresLetterToColor := strings.Contains(str, char)
-	if !TheresLetterToColor && ColorFlag && char != "" {
-		invalidLetter()
+	if strings.Contains(str, char) && char != "" {
+		return true
 	}
-	return TheresLetterToColor
+	return false
 }
 
 func CheckStringToColor(str string, char string) bool {
 	splittedInput := strings.Split(str, " ")
-	var TheresStringToColor bool
 	for _, val := range splittedInput {
-		TheresStringToColor = strings.EqualFold(val, char)
-		if TheresStringToColor {
-			StringValid += val
+		if strings.EqualFold(val, char) {
+			return true
 		}
 	}
-	return TheresStringToColor
+	return false
 }
