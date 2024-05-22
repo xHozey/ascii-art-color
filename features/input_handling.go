@@ -33,6 +33,7 @@ func CheckFlags(args []string) {
 			ColorFlag = true
 		}
 	}
+
 }
 
 // ValidateFileExtension validates if the file extension is ".txt".

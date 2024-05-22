@@ -70,12 +70,12 @@ func ExtractFlag(args []string) (string, string, string, string) {
 		if ColorFlag {
 			colorFile = extractColorFlag(args)
 			input = args[1]
-		} 
+		}
 		if OutputFlag {
 			outputFile = extractOutputFlag(args)
 			input = args[1]
 		}
-		if Banner {
+		if Banner && !ColorFlag && !OutputFlag {
 			applyBanner(args[1])
 			input = args[0]
 		} else if !Banner && !OutputFlag && !ColorFlag {

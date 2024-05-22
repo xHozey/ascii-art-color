@@ -18,10 +18,6 @@ func DrawASCIIArt(characterMatrix map[rune][]string, splittedInput []string, has
 		stringCheck = CheckStringToColor(input, letter)
 	}
 
-	if !letterCheck && !stringCheck && ColorFlag {
-		invalidLetter()
-	}
-
 	if letter == "" {
 		letter = input
 	}
@@ -68,6 +64,8 @@ func DrawASCIIArt(characterMatrix map[rune][]string, splittedInput []string, has
 								// Apply color to the character
 								result += Color + characterMatrix[k][j] + Default
 								Run = false
+							} else if ColorFlag && !letterCheck && !stringCheck {
+								result += Color + characterMatrix[k][j] + Default
 							} else {
 								result += characterMatrix[k][j]
 							}
