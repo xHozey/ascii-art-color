@@ -70,18 +70,7 @@ func extractOutputFlag(arg []string) string {
 	return output
 }
 
-// CheckLettersToColor checks if the specified characters should be colored in the output.
-// func CheckLettersToColor(str string, char string) bool {
-// 	var TheresLetterToColor bool
-// 	for _, val := range char {
-// 		TheresLetterToColor = strings.ContainsRune(str, val)
-// 		if !TheresLetterToColor && ColorFlag && char != "" {
-// 			invalidLetter()
-// 		}
-// 	}
-// 	return TheresLetterToColor
-// }
-
+// CheckLettersToColor checks if a given string contains a specific character.
 func CheckLettersToColor(str string, char string) bool {
 	if strings.Contains(str, char) && char != "" {
 		return true
@@ -89,6 +78,7 @@ func CheckLettersToColor(str string, char string) bool {
 	return false
 }
 
+// CheckStringToColor checks if a given string contains a specific word.
 func CheckStringToColor(str string, char string) bool {
 	splittedInput := strings.Split(str, " ")
 	for _, val := range splittedInput {

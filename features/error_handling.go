@@ -22,6 +22,7 @@ func invalidColor() {
 			Magenta + "purple" + Reset + " " +
 			Cyan + "cyan" + Reset + " " +
 			Gray + "gray" + Reset + " " +
+			 Orange + "orange" + Reset + " " +
 			White + "white" + Reset,
 	)
 	os.Exit(0)

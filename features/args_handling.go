@@ -43,7 +43,7 @@ func ExtractFlag(args []string) (string, string, string, string) {
 		}
 		if Banner {
 			applyBanner(args[3])
-		} else if !Banner {
+		} else {
 			invalidBanner()
 		}
 	case 3:
@@ -58,7 +58,7 @@ func ExtractFlag(args []string) (string, string, string, string) {
 			input = args[1]
 			if Banner {
 				applyBanner(args[2])
-			} else if !Banner {
+			} else {
 				invalidBanner()
 			}
 		} else {
@@ -70,7 +70,8 @@ func ExtractFlag(args []string) (string, string, string, string) {
 		if ColorFlag {
 			colorFile = extractColorFlag(args)
 			input = args[1]
-		} else if OutputFlag {
+		} 
+		if OutputFlag {
 			outputFile = extractOutputFlag(args)
 			input = args[1]
 		}
