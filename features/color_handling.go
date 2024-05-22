@@ -15,6 +15,7 @@ var (
 	Cyan    = "\033[36m"
 	Gray    = "\033[90m"
 	White   = "\033[97m"
+	Orange  = "\033[38;5;208m"
 )
 
 // ColorSelection selects the appropriate ANSI color code based on the input string.
@@ -43,6 +44,8 @@ func ColorSelection(s string) (string, string) {
 			selectedColor = Gray
 		case "white":
 			selectedColor = White
+		case "orange":
+			selectedColor = Orange
 		default:
 			invalidColor()
 		}
